@@ -1,0 +1,9 @@
+= @question.title
+br
+h2 = @question.body
+
+br
+h1 Answers:
+- if @question.answers.empty?
+  h1 no answers
+  = link_to 'New Answer', new_question_answer_path(@question)

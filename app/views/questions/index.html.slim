@@ -1,0 +1,6 @@
+p
+  = @questions.each do |q|
+    = q.title
+    = q.body
+br
+  = link_to 'Create New Questions', new_question_path
