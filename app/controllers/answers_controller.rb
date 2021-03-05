@@ -1,5 +1,5 @@
 class AnswersController < ApplicationController
-  before_action :find_answer, only: %i[show edit]
+  before_action :find_answer, only: %i[show edit update]
   before_action :find_question, only: %i[new create]
 
   def show; end
@@ -22,6 +22,15 @@ class AnswersController < ApplicationController
   end
 
   def edit; end
+
+  def update
+    @answer.update(answer_params)
+    if @answer.save
+      redirect_to @answer.question
+    else
+      render :edit
+    end
+  end
 
   private
 
