@@ -1,5 +1,5 @@
 class AnswersController < ApplicationController
-  before_action :find_answer, only: %i[show edit update]
+  before_action :find_answer, only: %i[show edit update destroy]
   before_action :find_question, only: %i[new create]
 
   def show; end
@@ -30,6 +30,11 @@ class AnswersController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def destroy
+    @answer.destroy
+    redirect_to root_path
   end
 
   private

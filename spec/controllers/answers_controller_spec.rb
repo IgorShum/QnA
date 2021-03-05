@@ -109,7 +109,18 @@ RSpec.describe AnswersController, type: :controller do
         expect(response).to render_template :edit
       end
     end
-
   end
 
+  describe 'DELETE #destroy' do
+    before { answer }
+
+    it 'delete answer' do
+      expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+    end
+
+    it 'redirect to index' do
+      delete :destroy, params: { id: answer }
+      expect(response).to redirect_to root_path
+    end
+  end
 end
