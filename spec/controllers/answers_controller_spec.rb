@@ -45,4 +45,36 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
+  describe 'GET #edit' do
+    before { get :edit, params: { id: answer } }
+
+    it 'assigns the requested answer to @answer' do
+      expect(assigns(:answer)).to eq answer
+    end
+
+    it 'renders edit view' do
+      expect(response).to render_template :edit
+    end
+  end
+
+  describe 'POST #create' do
+    it 'with valid attributes' do
+      expect { post :create, params: { answer: attributes_for(:answer), question_id: question.id } }.to change(Answer, :count).by(1)
+    end
+
+    it 'redirect to show view' do
+      post :create, params: { answer: attributes_for(:answer), question_id: answer.question_id }
+      expect(response).to redirect_to question_path(assigns(:question))
+    end
+
+    it 'with invalid attributes' do
+      expect { post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id } }.to_not change(Answer, :count)
+    end
+
+    it 're-renders new view' do
+      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }
+      expect(response).to render_template :new
+    end
+  end
+
 end
