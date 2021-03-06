@@ -36,3 +36,6 @@ yarn-debug.log*
 .yarn-integrity
 
 config/database.yml
+.rubocop.yml
+.rubocop_todo.yml
+.gitignore
