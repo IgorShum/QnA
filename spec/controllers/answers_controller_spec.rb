@@ -59,7 +59,10 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'POST #create' do
     it 'with valid attributes' do
-      expect { post :create, params: { answer: attributes_for(:answer), question_id: question.id } }.to change(Answer, :count).by(1)
+      expect {
+  post :create, params: { answer: attributes_for(:answer),
+                          question_id: question.id }
+      } .to change(question.answers, :count).by(1)
     end
 
     it 'redirect to show view' do
