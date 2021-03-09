@@ -3,6 +3,7 @@ require 'support/factory_bot'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
+  let(:user) { create(:user) }
   describe 'GET #index' do
     let(:questions) { create_list(:question, 2) }
     before { get :index }
@@ -28,6 +29,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }
     before { get :new }
     it 'assign a new Question to @question' do
       expect(assigns(:question)).to be_a_new(Question)
@@ -39,6 +41,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }
     before { get :edit, params: { id: question.id } }
 
     it 'assigns the requested question to @question' do
@@ -51,6 +54,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
     context 'with valid attributes' do
       it 'save the new question in db' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
@@ -75,6 +79,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { login(user) }
     context 'valid attributes' do
       it 'assigns the requested question to @question' do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
@@ -109,6 +114,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { login(user) }
     before { question }
 
     it 'delete question' do
