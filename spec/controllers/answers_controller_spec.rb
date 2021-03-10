@@ -2,11 +2,13 @@ require 'rails_helper'
 require 'support/factory_bot'
 
 RSpec.describe AnswersController, type: :controller do
+  let(:user) { create(:user) }
   let(:question) { create(:question) }
   let(:answer) { create(:answer, question: question) }
   let(:answers) { create_list(:answer, 2, question: question) }
 
   describe 'GET #index' do
+    before { login(user) }
     before { get :index, params: { question_id: question } }
 
     it 'populates an array of all answers' do
@@ -20,6 +22,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #show' do
+    before { login(user) }
     before { get :show, params: { id: answer.id } }
     it 'returns http success' do
       expect(response).to have_http_status(:success)
@@ -35,6 +38,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }
     before { get :new, params: { question_id: answer.question_id } }
     it 'assigns a new answer to @answer' do
       expect(assigns(:answer)).to be_a_new(Answer)
@@ -46,6 +50,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }
     before { get :edit, params: { id: answer } }
 
     it 'assigns the requested answer to @answer' do
@@ -58,11 +63,10 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
     it 'with valid attributes' do
-      expect {
-  post :create, params: { answer: attributes_for(:answer),
-                          question_id: question.id }
-      } .to change(question.answers, :count).by(1)
+      expect { post :create, params: { answer: attributes_for(:answer),
+                                       question_id: question.id } }.to change(question.answers, :count).by(1)
     end
 
     it 'redirect to show view' do
@@ -81,6 +85,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { login(user) }
     context 'valid attributes' do
       it 'assign the requested answer to @answer' do
         patch :update, params: { id: answer.id, answer: attributes_for(:answer) }
@@ -115,6 +120,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { login(user) }
     before { answer }
 
     it 'delete answer' do

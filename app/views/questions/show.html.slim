@@ -1,15 +1,24 @@
-h1= @question.title
+h1 Question
+
+h2= @question.title
 br
 p= @question.body
 
 br
-h1 Answers:
+h3 Answers:
 - if @question.answers.empty?
-  h1 no answers
+  h3 no answers
 - else
   - @question.answers.each do |a|
-      = a.body
-      br
-
+    = a.body
+    br
 br
+
+= form_with(model: [@question, Answer], local: true) do |f|
+  = f.label :body
+  = f.text_area :body
+  br
+  = f.submit 'Create Answer'
+
+
 = link_to 'New Answer', new_question_answer_path(@question)
