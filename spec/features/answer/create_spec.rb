@@ -5,9 +5,11 @@ feature 'User can write answer on question page' do
   given(:questions) { create_list(:question, 2) }
   context 'Authenticated user action on page' do
     given(:user) { create(:user) }
-    scenario 'Authenticated user' do
+    background do
       sign_in(user)
       question
+    end
+    scenario 'Authenticated user' do
       visit questions_path
       expect(page).to have_content question.title
       click_on 'MyString'
@@ -19,8 +21,6 @@ feature 'User can write answer on question page' do
     end
 
     scenario 'Authenticated user write answer in inline form' do
-      sign_in(user)
-      question
       visit question_path(question)
       expect(page).to have_content 'Body'
       fill_in 'Body', with: 'BodTestText'
