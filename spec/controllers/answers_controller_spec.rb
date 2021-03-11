@@ -3,9 +3,9 @@ require 'support/factory_bot'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
-  let(:question) { create(:question) }
-  let(:answer) { create(:answer, question: question) }
-  let(:answers) { create_list(:answer, 2, question: question) }
+  let(:question) { create(:question, user: user) }
+  let(:answer) { create(:answer, question: question, user: user) }
+  let(:answers) { create_list(:answer, 2, question: question, user: user) }
 
   describe 'GET #index' do
     before { login(user) }
@@ -65,8 +65,10 @@ RSpec.describe AnswersController, type: :controller do
   describe 'POST #create' do
     before { login(user) }
     it 'with valid attributes' do
-      expect { post :create, params: { answer: attributes_for(:answer),
-                                       question_id: question.id } }.to change(question.answers, :count).by(1)
+      expect {
+        post :create,
+             params: { answer: attributes_for(:answer),
+                       question_id: question.id } }.to change(question.answers, :count).by(1)
     end
 
     it 'redirect to show view' do
@@ -75,12 +77,15 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     it 'with invalid attributes' do
-      expect { post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id } }.to_not change(Answer, :count)
+      expect {
+        post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id,
+                                user: user } }.to_not change(Answer, :count)
     end
 
-    it 're-renders new view' do
-      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }
-      expect(response).to render_template :new
+    it 're-renders view' do
+      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id,
+                              user: user }
+      expect(response).to redirect_to question
     end
   end
 
@@ -88,7 +93,7 @@ RSpec.describe AnswersController, type: :controller do
     before { login(user) }
     context 'valid attributes' do
       it 'assign the requested answer to @answer' do
-        patch :update, params: { id: answer.id, answer: attributes_for(:answer) }
+        patch :update, params: { id: answer.id, answer: attributes_for(:answer), user: user}
         expect(assigns(:answer)).to eq answer
       end
 

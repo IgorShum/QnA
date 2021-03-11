@@ -10,7 +10,13 @@ h3 Answers:
   h3 no answers
 - else
   - @question.answers.each do |a|
+    | id:
+    = a.id
+    |
+    = link_to a.user_id, answer_path(a)
     = a.body
+    - if a.user == current_user
+      = link_to 'Delete', answer_path(a), method: :delete
     br
 br
 

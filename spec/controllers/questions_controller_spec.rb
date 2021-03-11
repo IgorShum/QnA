@@ -2,10 +2,10 @@ require 'rails_helper'
 require 'support/factory_bot'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { create(:question) }
   let(:user) { create(:user) }
+  let(:question) { create(:question, user: user) }
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 2) }
+    let(:questions) { create_list(:question, 2, user: user) }
     before { get :index }
     it 'populates an array of all questions' do
       expect(assigns(:questions)).to match_array(questions)
@@ -61,7 +61,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 'redirect to show view' do
-        post :create, params: { question: attributes_for(:question) }
+        post :create, params: { question: attributes_for(:question, user: user) }
         expect(response).to redirect_to question_path(assigns(:question))
       end
     end

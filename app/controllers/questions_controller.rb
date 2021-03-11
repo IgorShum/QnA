@@ -15,7 +15,7 @@ class QuestionsController < ApplicationController
   def edit; end
 
   def create
-    @question = Question.new(question_params)
+    @question = current_user.questions.build(question_params)
     if @question.save
       redirect_to @question, notice: 'Your question successfully created.'
     else
@@ -32,8 +32,12 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy
-    redirect_to question_path
+    if check_user
+      @question.destroy
+      redirect_to question_path
+    else
+      redirect_to questions_path, notice: 'Permission denied.'
+    end
   end
 
   private
@@ -44,5 +48,9 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body)
+  end
+
+  def check_user
+    current_user.author_of?(@question)
   end
 end
