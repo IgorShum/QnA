@@ -32,9 +32,9 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    if check_user
+    if current_user.author_of?(@question)
       @question.destroy
-      redirect_to question_path
+      redirect_to questions_path, notice: 'Question deleted.'
     else
       redirect_to questions_path, notice: 'Permission denied.'
     end
@@ -48,9 +48,5 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body)
-  end
-
-  def check_user
-    current_user.author_of?(@question)
   end
 end

@@ -7,48 +7,6 @@ RSpec.describe AnswersController, type: :controller do
   let(:answer) { create(:answer, question: question, user: user) }
   let(:answers) { create_list(:answer, 2, question: question, user: user) }
 
-  describe 'GET #index' do
-    before { login(user) }
-    before { get :index, params: { question_id: question } }
-
-    it 'populates an array of all answers' do
-      expect(assigns(:answers)).to match_array(answers)
-    end
-
-    it 'render index view' do
-      expect(response).to render_template :index
-    end
-
-  end
-
-  describe 'GET #show' do
-    before { login(user) }
-    before { get :show, params: { id: answer.id } }
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
-    end
-
-    it 'assigns to requested answer to @answer' do
-      expect(assigns(:answer)).to eq answer
-    end
-
-    it 'render show view' do
-      expect(response).to render_template :show
-    end
-  end
-
-  describe 'GET #new' do
-    before { login(user) }
-    before { get :new, params: { question_id: answer.question_id } }
-    it 'assigns a new answer to @answer' do
-      expect(assigns(:answer)).to be_a_new(Answer)
-    end
-
-    it 'render :new view' do
-      expect(response).to render_template :new
-    end
-  end
-
   describe 'GET #edit' do
     before { login(user) }
     before { get :edit, params: { id: answer } }
@@ -83,9 +41,8 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     it 're-renders view' do
-      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id,
-                              user: user }
-      expect(response).to redirect_to question
+      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }
+      expect(response).to render_template :show
     end
   end
 
@@ -132,9 +89,9 @@ RSpec.describe AnswersController, type: :controller do
       expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
     end
 
-    it 'redirect to index' do
+    it 'redirect to question' do
       delete :destroy, params: { id: answer }
-      expect(response).to redirect_to root_path
+      expect(response).to redirect_to answer.question
     end
   end
 end

@@ -1,8 +1,9 @@
 h1 Questions list
 p
-  -@questions.each do |q|
-    | ID:
-    = q.id
+  -@questions.each_with_index do |q, index|
+    = "Question: #{index}"
+    - if q.user == current_user
+      = link_to "Delete Question", question_path(q), method: :delete
     br
     = link_to q.title, question_path(q)
     div.question.body
