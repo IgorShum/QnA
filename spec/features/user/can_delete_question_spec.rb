@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User can delete questions and answers', %q{
+feature 'User can delete questions', %q{
   User can deleted their question/answer
   User cannot delete not their own. Permission denied
 } do
@@ -10,6 +10,7 @@ feature 'User can delete questions and answers', %q{
   given(:question2) { create(:question, user: user2) }
   given(:answer1) { create(:answer, question: question1, user: user) }
   given(:answer2) { create(:answer, question: question1, user: user2) }
+  given(:answer3) { create(:answer, question: question2, user: user2) }
 
   background do
     user
@@ -18,6 +19,7 @@ feature 'User can delete questions and answers', %q{
     question2
     answer1
     answer2
+    answer3
   end
 
   scenario 'user can delete their question' do
@@ -28,30 +30,16 @@ feature 'User can delete questions and answers', %q{
     expect(page).to_not have_content question1.id
   end
 
-  scenario 'user can delete their answer' do
-    sign_in(user)
-    visit question_path(question1)
-    expect(page).to have_content 'AnswerBody'
-    click_on 'Delete'
-    expect(page).to_not have_content 'Delete'
-  end
-
   scenario 'user cannot delete not their own question' do
     sign_in(user)
     visit question_path(question2)
-    page.driver.delete(question_path(question2))
-    visit question_path(question2)
-    expect(page).to have_content 'Permission denied.'
+    expect(page).to_not have_content 'Delete Question'
   end
 
-  scenario 'user cannot delete not their own answer' do
+  scenario 'user cannot delete question, use post request' do
     sign_in(user)
-    visit question_path(question1)
-    expect(page).to have_content 'AnswerBody'
-    visit answer_path(answer2)
-    expect(page).to have_content answer2.body
-    page.driver.delete(answer_path(answer2))
-    visit question_path(question1)
+    page.driver.delete(question_path(question2))
+    visit question_path(question2)
     expect(page).to have_content 'Permission denied.'
   end
 end

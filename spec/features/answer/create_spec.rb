@@ -13,8 +13,8 @@ feature 'User can write answer on question page' do
       visit questions_path
       expect(page).to have_content question.title
       click_on 'MyString'
-      expect(page).to have_content 'New Answer'
-      click_on 'New Answer'
+      expect(page).to have_content question.body
+      click_on 'Create Answer'
       fill_in 'Body', with: 'TestText'
       click_on 'Create Answer'
       expect(page).to have_content 'TestText'
@@ -34,9 +34,8 @@ feature 'User can write answer on question page' do
     visit questions_path
     expect(page).to have_content question.title
     click_on 'MyString'
-    expect(page).to have_content question.body
-    expect(page).to have_content 'New Answer'
-    click_on 'New Answer'
+    fill_in 'Body', with: 'MyString'
+    click_on 'Create Answer'
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 

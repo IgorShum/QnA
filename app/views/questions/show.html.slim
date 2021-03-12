@@ -9,13 +9,11 @@ h3 Answers:
 - if @question.answers.empty?
   h3 no answers
 - else
-  - @question.answers.each do |a|
-    | id:
-    = a.id
-    |
-    = link_to a.user_id, answer_path(a)
+  - @question.answers.each_with_index do |a, index|
+    = "Answer ##{index}:"
+    br
     = a.body
-    - if a.user == current_user
+    - if current_user.author_of?(a)
       = link_to 'Delete', answer_path(a), method: :delete
     br
 br
@@ -26,5 +24,3 @@ br
   br
   = f.submit 'Create Answer'
 
-
-= link_to 'New Answer', new_question_answer_path(@question)

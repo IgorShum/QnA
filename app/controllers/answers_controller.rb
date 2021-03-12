@@ -1,23 +1,17 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: %i[create new destroy]
-  before_action :find_answer, only: %i[show edit update destroy]
-  before_action :find_question, only: %i[new create]
+  before_action :authenticate_user!
+  before_action :find_answer, only: %i[edit update destroy]
+  before_action :find_question, only: :create
 
-  def show; end
-
-  def index
-    @answers = Answer.all
-  end
-
-  def new
-    @answer = Answer.new
-  end
 
   def create
     @answer = current_user.answers.build(answer_params)
     @answer.question = @question
-    @answer.save
-    redirect_to @question
+    if @answer.save
+      redirect_to @question
+    else
+      render 'questions/show'
+    end
   end
 
   def edit; end
@@ -32,9 +26,9 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    if check_user
+    if current_user.author_of?(@answer)
       @answer.destroy
-      redirect_to root_path
+      redirect_to @answer.question, notice: 'Answer deleted.'
     else
       redirect_to @answer.question, notice: 'Permission denied.'
     end
@@ -52,9 +46,5 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.require(:answer).permit(:body)
-  end
-
-  def check_user
-    current_user.author_of?(@answer)
   end
 end
