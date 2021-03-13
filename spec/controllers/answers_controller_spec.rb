@@ -2,10 +2,11 @@ require 'rails_helper'
 require 'support/factory_bot'
 
 RSpec.describe AnswersController, type: :controller do
-  let(:user) { create(:user) }
-  let(:question) { create(:question, user: user) }
-  let(:answer) { create(:answer, question: question, user: user) }
-  let(:answers) { create_list(:answer, 2, question: question, user: user) }
+  let!(:user) { create(:user) }
+  let!(:user2) { create(:user) }
+  let!(:question) { create(:question, user: user) }
+  let!(:answer) { create(:answer, question: question, user: user) }
+  let!(:answers) { create_list(:answer, 2, question: question, user: user) }
 
   describe 'GET #edit' do
     before { login(user) }
@@ -72,7 +73,6 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not change answer attributes' do
         answer.reload
         expect(answer.body).to eq 'AnswerBody'
-
       end
 
       it 're-render view edit' do
@@ -82,16 +82,30 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
-    before { answer }
+    context 'author of answer' do
+      before { login(user) }
 
-    it 'delete answer' do
-      expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+      it 'delete answer' do
+        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+      end
+
+      it 'redirect to question' do
+        delete :destroy, params: { id: answer }
+        expect(response).to redirect_to answer.question
+      end
     end
 
-    it 'redirect to question' do
-      delete :destroy, params: { id: answer }
-      expect(response).to redirect_to answer.question
+    context 'non author of answer' do
+      before { login(user2) }
+
+      it 'tries delete answer' do
+        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+      end
+
+      it 'redirect to view after tries delete' do
+        delete :destroy, params: { id: answer }
+        expect(response).to redirect_to answer.question
+      end
     end
   end
 end
