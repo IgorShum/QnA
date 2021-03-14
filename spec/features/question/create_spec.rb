@@ -6,7 +6,7 @@ feature 'User can create question', %q{
   I'd like to be able to ask the question
 } do
 
-  given(:user) { create(:user) }
+  given!(:user) { create(:user) }
 
   describe 'Authenticated user' do
     background do
@@ -19,7 +19,6 @@ feature 'User can create question', %q{
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'Body text'
       click_on 'Ask'
-
       expect(page).to have_content 'Your question successfully created.'
       expect(page).to have_content 'Test question'
       expect(page).to have_content 'Body text'

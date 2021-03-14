@@ -1,31 +1,37 @@
 require 'rails_helper'
 
 feature 'User can view the list of questions' do
-  given(:user) { create(:user) }
-  given(:question) { create(:question) }
-  given(:answers){ create_list(:answer, 2, question: question) }
-  given!(:questions) { create_list(:question, 2) }
+  given!(:user) { create(:user) }
+  given!(:question) { create(:question) }
+  given!(:question2) { create(:question) }
 
   context 'Authenticate User' do
-    background do
+    before do
       sign_in(user)
-    end
-    scenario 'views question list' do
       visit questions_path
+    end
+
+    scenario 'views question list' do
+      expect(page).to have_content question.body
       expect(page).to have_content question.body
     end
 
-    scenario 'views question' do
-      question
-      answers
+    scenario 'follow the link and view question' do
       visit question_path(question)
-      expect(page).to have_content question.answers.first.body
-      expect(page).to have_content question.answers.last.body
+      expect(page).to have_content question.body
     end
   end
 
-  scenario 'Nonauthenticated user' do
-    visit questions_path
-    expect(page).to have_content 'Questions list'
+  context 'Nonauthenticated user' do
+    scenario 'see question list' do
+      visit questions_path
+      expect(page).to have_content question.body
+      expect(page).to have_content question2.body
+    end
+
+    scenario 'follow the link and view question' do
+      visit question_path(question)
+      expect(page).to have_content question.body
+    end
   end
 end
