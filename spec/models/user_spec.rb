@@ -10,10 +10,10 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of :password }
 
   it 'User author_of created question' do
-    expect(user.author_of?(question)).to eq true
+    expect(user).to be_author_of(question)
   end
 
   it 'User not author not their own question' do
-    expect(user.author_of?(question2)).to_not eq true
+    expect(user).to_not be_author_of(question2)
   end
 end
