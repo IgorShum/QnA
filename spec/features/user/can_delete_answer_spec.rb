@@ -12,21 +12,30 @@ feature 'User can delete answer', %q{
   given!(:answer2) { create(:answer, question: question1, user: user2) }
   given!(:answer3) { create(:answer, question: question2, user: user2) }
 
-  background do
-    sign_in(user)
+  context 'Authenticate user' do
+    background do
+      sign_in(user)
+    end
+
+    scenario 'user can delete their answer' do
+      visit question_path(question1)
+      expect(page).to have_content 'AnswerBody3'
+      click_on 'Delete'
+      expect(page).to have_content 'Answer deleted.'
+      expect(page).to_not have_content 'AnswerBody3'
+    end
+
+    scenario 'user does not see links to delete' do
+      visit question_path(question2)
+      expect(page).to have_content answer3.body
+      expect(page).to_not have_content 'Delete'
+    end
   end
 
-  scenario 'user can delete their answer' do
-    visit question_path(question1)
-    expect(page).to have_content 'AnswerBody3'
-    click_on 'Delete'
-    expect(page).to have_content 'Answer deleted.'
-    expect(page).to_not have_content answer1.body
-  end
-
-  scenario 'user does not see links to delete' do
-    visit question_path(question2)
-    expect(page).to have_content answer3.body
-    expect(page).to_not have_content 'Delete'
+  context 'Nonauthenticate user' do
+    scenario 'not view delete link' do
+      visit question_path(question1)
+      expect(page).to_not have_content 'Delete'
+    end
   end
 end
