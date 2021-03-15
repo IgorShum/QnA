@@ -27,23 +27,23 @@ RSpec.describe AnswersController, type: :controller do
       expect {
         post :create,
              params: { answer: attributes_for(:answer),
-                       question_id: question.id } }.to change(question.answers, :count).by(1)
+                       question_id: question.id }, format: :js }.to change(question.answers, :count).by(1)
     end
 
     it 'redirect to show view' do
-      post :create, params: { answer: attributes_for(:answer), question_id: answer.question_id }
-      expect(response).to redirect_to question_path(assigns(:question))
+      post :create, params: { answer: attributes_for(:answer), question_id: answer.question_id }, format: :js
+      expect(response).to render_template :create
     end
 
     it 'with invalid attributes' do
       expect {
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id,
-                                user: user } }.to_not change(Answer, :count)
+                                user: user }, format: :js }.to_not change(Answer, :count)
     end
 
     it 're-renders view' do
-      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }
-      expect(response).to render_template :show
+      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }, format: :js
+      expect(response).to render_template :create
     end
   end
 
