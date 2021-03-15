@@ -2,10 +2,14 @@ require 'rails_helper'
 require 'support/factory_bot'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { create(:question) }
+  let(:user) { create(:user) }
+  let!(:user2) { create(:user) }
+  let(:question) { create(:question, user: user) }
+
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 2) }
+    let(:questions) { create_list(:question, 2, user: user) }
     before { get :index }
+
     it 'populates an array of all questions' do
       expect(assigns(:questions)).to match_array(questions)
     end
@@ -28,7 +32,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }
     before { get :new }
+
     it 'assign a new Question to @question' do
       expect(assigns(:question)).to be_a_new(Question)
     end
@@ -39,6 +45,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }
     before { get :edit, params: { id: question.id } }
 
     it 'assigns the requested question to @question' do
@@ -51,13 +58,15 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
+
     context 'with valid attributes' do
       it 'save the new question in db' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
 
       it 'redirect to show view' do
-        post :create, params: { question: attributes_for(:question) }
+        post :create, params: { question: attributes_for(:question, user: user) }
         expect(response).to redirect_to question_path(assigns(:question))
       end
     end
@@ -75,6 +84,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { login(user) }
+
     context 'valid attributes' do
       it 'assigns the requested question to @question' do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
@@ -96,6 +107,7 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'invalid attributes' do
       before { patch :update, params: { id: question.id, question: { title: 'new title', body: nil } } }
+
       it 'does not change question attributes' do
         question.reload
         expect(question.title).to eq 'MyString'
@@ -109,15 +121,33 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { question }
+    context 'author of question' do
+      before { login(user) }
+      before { question }
 
-    it 'delete question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      it 'delete question' do
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirect to index view' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
     end
 
-    it 'redirect to index view' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to question_path
+    context 'non author question' do
+      before { login(user2) }
+
+      it 'tries delete question' do
+        question
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
+      end
+
+      it 'redirect to view after tries delete' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
+
     end
   end
 end

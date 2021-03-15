@@ -1,15 +1,27 @@
-= @question.title
+h1 Question
+
+h2= @question.title
 br
-h2 = @question.body
+p= @question.body
 
 br
-h1 Answers:
+h3 Answers:
 - if @question.answers.empty?
-  h1 no answers
+  h3 no answers
 - else
-  - @question.answers.each do |a|
-      = a.body
-      br
-
+  - @question.answers.each_with_index do |a, index|
+    = "Answer ##{index}:"
+    br
+    = a.body
+    - if current_user&.author_of?(a)
+      = link_to 'Delete', answer_path(a), method: :delete
+    br
 br
-= link_to 'New Answer', new_question_answer_path(@question)
+
+= form_with(model: [@question, @answer], local: true) do |f|
+  = render 'shared/errors', resource: @answer
+  = f.label :body
+  = f.text_area :body
+  br
+  = f.submit 'Create Answer'
+
