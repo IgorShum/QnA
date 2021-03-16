@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_answer, only: %i[edit update destroy]
-  before_action :find_question, only: :create
+  before_action :find_question, only: %i[create]
 
 
   def create
@@ -19,6 +19,7 @@ class AnswersController < ApplicationController
     else
       render :edit
     end
+    @question = @answer.question
   end
 
   def destroy

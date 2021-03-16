@@ -10,17 +10,11 @@ h3 Answers:
   - if @question.answers.empty?
     h3 no answers
   - else
-    - @question.answers.each_with_index do |a, index|
-      = "Answer ##{index}:"
-      br
-      = a.body
-      - if current_user&.author_of?(a)
-        = link_to 'Delete', answer_path(a), method: :delete
-      br
+    = render @question.answers
 br
 
 .answer-errors
-= form_with model: [@question, @answer] do |f|
+= form_with model: [@question, @answer], class: 'new-answer' do |f|
   = f.label :body
   = f.text_area :body
   br
