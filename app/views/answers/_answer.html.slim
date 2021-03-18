@@ -1,11 +1,12 @@
 - if answer.best
-  .answer.best
-    p=answer.body
+  .card.answer.best
+    .card-body
+      =answer.body
 -else
-  .answer*{'id'=>answer.id}
+  .card.answer*{'id'=>answer.id}
     - if user_signed_in? && current_user&.author_of?(answer.question)
       = button_to 'Best!', best_answer_path(answer), remote: true
-    .body
+    .card-body.body
       =answer.body
 
 - if user_signed_in? && current_user&.author_of?(answer)

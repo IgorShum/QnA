@@ -1,12 +1,11 @@
-h1 Question
-
-h2= @question.title
-br
-p= @question.body
+.jumbotron-fluid
+  h2.display-4= @question.title
+  br
+  p.lead= @question.body
 
 br
 h3 Answers:
-.answers
+.answers.container-fluid
   - if @question.answers.empty?
     h3 no answers
   - else

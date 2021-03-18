@@ -1,12 +1,26 @@
-h1 Questions list
-p
-  -@questions.each_with_index do |q, index|
-    = "Question: #{index}"
-    - if current_user&.author_of?(q)
-      = link_to "Delete Question", question_path(q), method: :delete
-    br
-    = link_to q.title, question_path(q)
-    div.question.body
-      = q.body
-br
-  = link_to 'Ask question', new_question_path
+.container-fluid
+  div.center-block
+    h1 Questions list
+    p
+      table class="table"
+        thead
+          tr
+            th scope="col"
+              |#
+            th scope="col"
+              |Question
+            th scope="col"
+              |Action
+        tbody
+        - @questions.each_with_index do |q, index|
+          tr
+            th scope="row"
+              = "#{index}"
+            td
+              = link_to q.title, question_path(q)
+            td
+              - if current_user&.author_of?(q)
+                = link_to "Delete Question", question_path(q), method: :delete
+
+      br
+        = link_to 'Ask question', new_question_path

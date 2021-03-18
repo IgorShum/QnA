@@ -6,7 +6,7 @@ feature 'User can delete questions', %q{
 } do
   given!(:user) { create(:user) }
   given!(:user2) { create(:user) }
-  given!(:question1) { create(:question, body: 'TestQuestionOne', user: user) }
+  given!(:question1) { create(:question, title: 'Question1Title', body: 'TestQuestionOne', user: user) }
   given!(:question2) { create(:question, body: 'TestQuestionTwo', user: user2) }
 
   context 'Authenticate user' do
@@ -16,10 +16,10 @@ feature 'User can delete questions', %q{
 
     scenario 'can delete their question' do
       visit questions_path
-      expect(page).to have_content question1.body
+      expect(page).to have_content question1.title
       click_on 'Delete Question'
       expect(page).to have_content 'Question deleted.'
-      expect(page).to_not have_content question1.body
+      expect(page).to_not have_content question1.title
     end
 
     scenario 'does not see links to delete' do
