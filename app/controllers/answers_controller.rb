@@ -1,27 +1,29 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_answer, only: %i[edit update destroy]
-  before_action :find_question, only: :create
+  before_action :find_answer, only: %i[edit update destroy best]
+  before_action :find_question, only: %i[create]
 
 
   def create
     @answer = current_user.answers.build(answer_params)
     @answer.question = @question
-    if @answer.save
-      redirect_to @question
-    else
-      render 'questions/show'
-    end
+    @answer.save
   end
 
   def edit; end
 
   def update
     @answer.update(answer_params)
-    if @answer.save
-      redirect_to @answer.question
+    @question = @answer.question
+  end
+
+  def best
+    @question = @answer.question
+    if current_user.author_of?(@question)
+      @answer.mark_as_best
+      render 'answers/update'
     else
-      render :edit
+      redirect_to @question, notice: 'Permission denied.'
     end
   end
 

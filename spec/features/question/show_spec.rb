@@ -12,25 +12,25 @@ feature 'User can view the list of questions' do
     end
 
     scenario 'views question list' do
-      expect(page).to have_content question.body
-      expect(page).to have_content question.body
+      expect(page).to have_content question.title
     end
 
     scenario 'follow the link and view question' do
       visit question_path(question)
-      expect(page).to have_content question.body
+      expect(page).to have_content question.title
     end
   end
 
   context 'Nonauthenticated user' do
     scenario 'see question list' do
       visit questions_path
-      expect(page).to have_content question.body
-      expect(page).to have_content question2.body
+      expect(page).to have_content question.title
+      expect(page).to have_content question2.title
     end
 
     scenario 'follow the link and view question' do
       visit question_path(question)
+      expect(page).to have_content question.title
       expect(page).to have_content question.body
     end
   end

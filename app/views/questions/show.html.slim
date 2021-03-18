@@ -1,25 +1,19 @@
-h1 Question
-
-h2= @question.title
-br
-p= @question.body
+.jumbotron-fluid
+  h2.display-4= @question.title
+  br
+  p.lead= @question.body
 
 br
 h3 Answers:
-- if @question.answers.empty?
-  h3 no answers
-- else
-  - @question.answers.each_with_index do |a, index|
-    = "Answer ##{index}:"
-    br
-    = a.body
-    - if current_user&.author_of?(a)
-      = link_to 'Delete', answer_path(a), method: :delete
-    br
+.answers.container-fluid
+  - if @question.answers.empty?
+    h3 no answers
+  - else
+    = render @question.answers_order_by_best
 br
 
-= form_with(model: [@question, @answer], local: true) do |f|
-  = render 'shared/errors', resource: @answer
+.answer-errors
+= form_with model: [@question, @answer], class: 'new-answer' do |f|
   = f.label :body
   = f.text_area :body
   br

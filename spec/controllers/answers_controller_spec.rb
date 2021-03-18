@@ -9,8 +9,10 @@ RSpec.describe AnswersController, type: :controller do
   let!(:answers) { create_list(:answer, 2, question: question, user: user) }
 
   describe 'GET #edit' do
-    before { login(user) }
-    before { get :edit, params: { id: answer } }
+    before do
+      login(user)
+      get :edit, params: { id: answer }
+    end
 
     it 'assigns the requested answer to @answer' do
       expect(assigns(:answer)).to eq answer
@@ -27,23 +29,23 @@ RSpec.describe AnswersController, type: :controller do
       expect {
         post :create,
              params: { answer: attributes_for(:answer),
-                       question_id: question.id } }.to change(question.answers, :count).by(1)
+                       question_id: question.id }, format: :js }.to change(question.answers, :count).by(1)
     end
 
     it 'redirect to show view' do
-      post :create, params: { answer: attributes_for(:answer), question_id: answer.question_id }
-      expect(response).to redirect_to question_path(assigns(:question))
+      post :create, params: { answer: attributes_for(:answer), question_id: answer.question_id }, format: :js
+      expect(response).to render_template :create
     end
 
     it 'with invalid attributes' do
       expect {
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id,
-                                user: user } }.to_not change(Answer, :count)
+                                user: user }, format: :js }.to_not change(Answer, :count)
     end
 
     it 're-renders view' do
-      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }
-      expect(response).to render_template :show
+      post :create, params: { answer: attributes_for(:invalid_answer), question_id: question.id }, format: :js
+      expect(response).to render_template :create
     end
   end
 
@@ -51,32 +53,32 @@ RSpec.describe AnswersController, type: :controller do
     before { login(user) }
     context 'valid attributes' do
       it 'assign the requested answer to @answer' do
-        patch :update, params: { id: answer.id, answer: attributes_for(:answer), user: user}
+        patch :update, params: { id: answer.id, answer: attributes_for(:answer), user: user }, format: :js
         expect(assigns(:answer)).to eq answer
       end
 
       it 'changes answer attributes' do
         b = 'new text body'
-        patch :update, params: { id: answer.id, answer: { body: b } }
+        patch :update, params: { id: answer.id, answer: { body: b } }, format: :js
         answer.reload
         expect(answer.body).to eq b
       end
 
       it 'redirect to updated answer' do
-        patch :update, params: { id: answer.id, answer: attributes_for(:answer) }
-        expect(response).to redirect_to answer.question
+        patch :update, params: { id: answer.id, answer: attributes_for(:answer) }, format: :js
+        expect(response).to render_template :update
       end
     end
 
     context 'invalid attributes' do
-      before { patch :update, params: { id: answer.id, answer: { body: nil } } }
+      before { patch :update, params: { id: answer.id, answer: { body: nil } }, format: :js }
       it 'does not change answer attributes' do
         answer.reload
         expect(answer.body).to eq 'AnswerBody'
       end
 
       it 're-render view edit' do
-        expect(response).to render_template :edit
+        expect(response).to render_template :update
       end
     end
   end
@@ -106,6 +108,22 @@ RSpec.describe AnswersController, type: :controller do
         delete :destroy, params: { id: answer }
         expect(response).to redirect_to answer.question
       end
+    end
+  end
+
+  describe 'POST #best' do
+    before { login(user) }
+
+    it 'changes answer attributes' do
+      expect(answer.best).to eq false
+      post :best, params: { id: answer.id, answer: answer }, format: :js
+      answer.reload
+      expect(answer.best).to eq true
+    end
+
+    it 'render update template' do
+      post :best, params: { id: answer.id, answer: answer }, format: :js
+      expect(response).to render_template :update
     end
   end
 end
