@@ -1,10 +1,19 @@
-p= answer.body
+- if answer.best
+  .answer.best
+    p=answer.body
+-else
+  .answer*{'id'=>answer.id}
+    - if user_signed_in? && current_user&.author_of?(answer.question)
+      = button_to 'Best!', best_answer_path(answer), remote: true
+    .body
+      =answer.body
 
 - if user_signed_in? && current_user&.author_of?(answer)
   .links
     =link_to 'Delete', answer_path(answer), method: :delete
     =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
     = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
+      .edit-answer-errors
       = f.label :body
       = f.text_area :body
       br

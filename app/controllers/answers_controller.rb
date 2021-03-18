@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_answer, only: %i[edit update destroy]
+  before_action :find_answer, only: %i[edit update destroy best]
   before_action :find_question, only: %i[create]
 
 
@@ -14,12 +14,13 @@ class AnswersController < ApplicationController
 
   def update
     @answer.update(answer_params)
-    if @answer.save
-      redirect_to @answer.question
-    else
-      render :edit
-    end
     @question = @answer.question
+  end
+
+  def best
+    @answer.mark_as_best
+    @question = @answer.question
+    render 'answers/update'
   end
 
   def destroy

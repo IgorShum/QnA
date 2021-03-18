@@ -10,7 +10,7 @@ h3 Answers:
   - if @question.answers.empty?
     h3 no answers
   - else
-    = render @question.answers
+    = render @question.answers_order_by_best
 br
 
 .answer-errors

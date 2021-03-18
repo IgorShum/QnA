@@ -9,8 +9,10 @@ RSpec.describe AnswersController, type: :controller do
   let!(:answers) { create_list(:answer, 2, question: question, user: user) }
 
   describe 'GET #edit' do
-    before { login(user) }
-    before { get :edit, params: { id: answer } }
+    before do
+      login(user)
+      get :edit, params: { id: answer }
+    end
 
     it 'assigns the requested answer to @answer' do
       expect(assigns(:answer)).to eq answer
@@ -64,7 +66,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirect to updated answer' do
         patch :update, params: { id: answer.id, answer: attributes_for(:answer) }, format: :js
-        expect(response).to redirect_to answer.question
+        expect(response).to render_template :update
       end
     end
 
@@ -76,7 +78,7 @@ RSpec.describe AnswersController, type: :controller do
       end
 
       it 're-render view edit' do
-        expect(response).to render_template :edit
+        expect(response).to render_template :update
       end
     end
   end
@@ -106,6 +108,22 @@ RSpec.describe AnswersController, type: :controller do
         delete :destroy, params: { id: answer }
         expect(response).to redirect_to answer.question
       end
+    end
+  end
+
+  describe 'POST #best' do
+    before { login(user) }
+
+    it 'changes answer attributes' do
+      expect(answer.best).to eq false
+      post :best, params: { id: answer.id, answer: answer }, format: :js
+      answer.reload
+      expect(answer.best).to eq true
+    end
+
+    it 'render update template' do
+      post :best, params: { id: answer.id, answer: answer }, format: :js
+      expect(response).to render_template :update
     end
   end
 end
