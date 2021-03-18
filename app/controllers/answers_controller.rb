@@ -18,9 +18,13 @@ class AnswersController < ApplicationController
   end
 
   def best
-    @answer.mark_as_best
     @question = @answer.question
-    render 'answers/update'
+    if current_user.author_of?(@question)
+      @answer.mark_as_best
+      render 'answers/update'
+    else
+      redirect_to @question, notice: 'Permission denied.'
+    end
   end
 
   def destroy
