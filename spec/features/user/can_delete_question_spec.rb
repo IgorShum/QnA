@@ -17,7 +17,7 @@ feature 'User can delete questions', %q{
     scenario 'can delete their question' do
       visit questions_path
       expect(page).to have_content question1.title
-      click_on 'Delete Question'
+      click_on 'Delete'
       expect(page).to have_content 'Question deleted.'
       expect(page).to_not have_content question1.title
     end

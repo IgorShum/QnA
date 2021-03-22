@@ -2,10 +2,11 @@
   h2.display-4= @question.title
   br
   p.lead= @question.body
+  = render 'shared/attached_files', resource: @question
 
-  -if @question.files.attached?
-    -@question.files.each do |file|
-      p= link_to file.filename.to_s, url_for(file)
+  - if current_user&.author_of?(@question)
+    p= link_to 'Edit', edit_question_path(@question)
+
 
 br
 h3 Answers:
@@ -16,10 +17,13 @@ h3 Answers:
     = render @question.answers_order_by_best
 br
 
-.answer-errors
-= form_with model: [@question, @answer], class: 'new-answer' do |f|
-  = f.label :body
-  = f.text_area :body
-  br
-  = f.submit 'Create Answer'
+.container
+  .answer-errors
+  = form_with model: [@question, @answer], class: 'new-answer' do |f|
+    = f.label :body, class: 'exampleInput'
+    = f.text_area :body, class: 'form-control'
+    br
+    = f.file_field :files, multiple: true, class: 'form-control-file'
+    br
+    = f.submit 'Create Answer', class: 'btn btn-success'
 
