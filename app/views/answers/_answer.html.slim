@@ -13,8 +13,8 @@
 
 - if user_signed_in? && current_user&.author_of?(answer)
   .links
-    =link_to 'Delete', answer_path(answer), method: :delete
-    =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+    =link_to 'Delete', answer_path(answer),class: 'far fa-trash-alt text-danger', method: :delete
+    =link_to 'Edit', '#', class: 'edit-answer-link far fa-edit', data: { answer_id: answer.id }
     .container
     = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
       .edit-answer-errors
