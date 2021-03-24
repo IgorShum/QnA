@@ -11,11 +11,19 @@
     -if @question&.files.attached?
     .form-group
       = f.label "Attachments:", class: 'exampleFormControlTextarea1'
-      -@question.files.each do |file|
-        =link_to "Delete #{file.filename.to_s}", '#', class: 'far fa-times-circle text-danger'
+      .attachments
+        -@question.files.each do |file|
+          .attachment
+            =link_to "Delete #{file.filename.to_s}", attachment_path(file), class: 'far fa-times-circle text-danger',
+                  method: :delete, data: { id: file.id }
 
     .form-group
       = f.label :files, class: 'exampleFormControlFile1'
       = f.file_field :files, multiple: true, class: 'form-control-file'
 
     = f.submit 'Save', class: 'btn btn-primary'
+
+    javascript:
+        $('.attachments').on('click', '.attachment', function (e) {
+            e.target.remove()
+        })

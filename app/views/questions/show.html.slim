@@ -1,14 +1,16 @@
-.jumbotron-fluid
+
+.jumbotron-fluid.question
   h2.display-4= @question.title
   br
   p.lead= @question.body
   = render 'shared/attached_files', resource: @question
 
   - if current_user&.author_of?(@question)
-    = link_to 'Delete', question_path(@question), class: 'far fa-trash-alt text-danger', method: :delete
-    = link_to 'Edit', '#', class: 'far fa-edit'
-    = render 'edit'
+    .question-links
+      = link_to 'Delete', question_path(@question), class: 'far fa-trash-alt text-danger', method: :delete, remote: true
+      = link_to 'Edit', edit_question_path(@question), class: 'far fa-edit edit-question-link', remote: true
 
+.edit-question-errors
 br
 h3 Answers:
 .answers.container-fluid
