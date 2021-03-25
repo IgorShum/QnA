@@ -5,6 +5,11 @@ FactoryBot.define do
     title { 'MyString' }
     body { 'MyText' }
     user
+
+    trait :with_files do
+      files { Rack::Test::UploadedFile.new("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
+    end
+
   end
 
   factory :invalid_question, class: Question do
