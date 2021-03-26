@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 feature 'User can add attachment for answer' do
+  given!(:author) { create(:user) }
+  given!(:question) { create(:question) }
+  given!(:answer) { create(:answer, question: question, user: author) }
 
   context 'Authenticated user' do
-    given!(:author) { create(:user) }
-    given!(:question) { create(:question) }
-    given!(:answer) { create(:answer, question: question, user: author) }
-
     before do
       sign_in(author)
       visit question_path(question)
@@ -38,8 +37,17 @@ feature 'User can add attachment for answer' do
       expect(page).to have_link 'rails_helper.rb'
       click_on 'Edit'
       click_on 'Delete rails_helper.rb'
+      click_on 'Save'
       expect(page).to_not have_content 'rails_helper.rb'
     end
+  end
 
+  context 'Non-authenticate user', js: true do
+    scenario 'not view links for attachments', js: true do
+      visit question_path(question)
+      within '.answers' do
+        expect(page).to_not have_selector('input', class: 'form-control-file', id: 'answer_files')
+      end
+    end
   end
 end
