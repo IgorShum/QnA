@@ -19,7 +19,7 @@
 
     .form-group
       = f.label :files, class: 'exampleFormControlFile1'
-      = f.file_field :files, multiple: true, class: 'form-control-file'
+      = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
 
     = f.submit 'Save', class: 'btn btn-primary'
 

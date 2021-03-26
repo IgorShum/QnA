@@ -31,7 +31,7 @@
                       method: :delete, data: { id: file.id }
 
       .form-group
-      = f.file_field :files, multiple: true, class: 'form-control-file'
+      = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
 
       = f.submit 'Save', class: 'btn btn-primary'
   br
