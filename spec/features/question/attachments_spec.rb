@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'User can add attachment for question' do
   given!(:author) { create(:user) }
   given!(:question_without_files) { create(:question, user: author) }
+  given!(:question_with_file) { create(:question, :with_files, user: author) }
 
   context 'Authenticate user' do
     before do
@@ -28,10 +29,19 @@ feature 'User can add attachment for question' do
       click_button('Save')
       expect(page).to have_link('rails_helper.rb')
     end
+
+    scenario 'can delete attachment from edit form, their question', js: true do
+      add_attach_file question_with_file
+      visit question_path(question_with_file)
+      expect(page).to have_content 'rails_helper.rb'
+      click_on 'Edit'
+      click_on 'Delete rails_helper.rb'
+      expect(page).to_not have_content 'rails_helper.rb'
+    end
   end
 
   context 'Non-authenticate user', js: true do
-    scenario 'not view links for attachments, not their question', js: true do
+    scenario 'not view links for attachments', js: true do
       visit question_path(question_without_files)
       expect(page).to_not have_selector('input', class: 'form-control-file', id: 'question_files')
     end
