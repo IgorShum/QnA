@@ -1,0 +1,29 @@
+.container
+  = form_with model: @question, class: 'form', local: true do |f|
+    .form-group
+      = f.label :title, class: 'exampleInput'
+      = f.text_field :title, class: 'form-control' , placeholder: 'Title of the new question'
+
+    .form-group
+      = f.label :body, class: 'exampleFormControlTextarea1'
+      = f.text_area :body, class: 'form-control'
+
+    -if @question&.files.attached?
+    .form-group
+      = f.label "Attachments:", class: 'exampleFormControlTextarea1'
+      .attachments
+        -@question.files.each do |file|
+          .attachment
+            =link_to "Delete #{file.filename.to_s}", attachment_path(file), class: 'far fa-times-circle text-danger',
+                  method: :delete, data: { id: file.id }
+
+    .form-group
+      = f.label :files, class: 'exampleFormControlFile1'
+      = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
+
+    = f.submit 'Save', class: 'btn btn-primary'
+
+    javascript:
+        $('.attachments').on('click', '.attachment', function (e) {
+            e.target.remove()
+        })

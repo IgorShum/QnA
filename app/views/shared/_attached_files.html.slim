@@ -1,0 +1,6 @@
+- if resource&.files.attached?
+  - resource.files.each do |file|
+    -if file.representable?
+      =image_tag file.representation(resize_to_limit:[100,100])
+    -else
+      =link_to file.filename.to_s, url_for(file)

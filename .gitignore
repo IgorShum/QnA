@@ -39,3 +39,4 @@ config/database.yml
 .rubocop.yml
 .rubocop_todo.yml
 .gitignore
+.env

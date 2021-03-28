@@ -2,21 +2,41 @@
   .card.answer.best
     .card-body
       =answer.body
+      =render 'shared/attached_files', resource: answer
 -else
   .card.answer*{'id'=>answer.id}
     - if user_signed_in? && current_user&.author_of?(answer.question)
       = button_to 'Best!', best_answer_path(answer), remote: true
     .card-body.body
       =answer.body
+      =render 'shared/attached_files', resource: answer
 
 - if user_signed_in? && current_user&.author_of?(answer)
   .links
-    =link_to 'Delete', answer_path(answer), method: :delete
-    =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+    =link_to 'Delete', answer_path(answer),class: 'far fa-trash-alt text-danger', method: :delete
+    =link_to 'Edit', '#', class: 'edit-answer-link far fa-edit', data: { answer_id: answer.id }
+    .container
     = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
       .edit-answer-errors
-      = f.label :body
-      = f.text_area :body
-      br
-      = f.submit 'Save'
+      .form-group
+      = f.label :body, class: 'exampleInput'
+      = f.text_area :body, class: 'form-control'
+
+      .form-group
+        = f.label "Attachments:", class: 'exampleFormControlTextarea1'
+        .attachments
+          - answer.files.each do |file|
+            .attachment
+              = link_to "Delete #{file.filename.to_s}", attachment_path(file), class: 'far fa-times-circle text-danger',
+                      method: :delete, data: { id: file.id }
+
+      .form-group
+      = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
+
+      = f.submit 'Save', class: 'btn btn-primary'
   br
+
+    javascript:
+        $('.attachments').on('click', '.attachment', function (e) {
+            e.target.remove()
+        })
