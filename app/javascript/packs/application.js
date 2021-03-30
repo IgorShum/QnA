@@ -7,14 +7,15 @@
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
-require("channels")
+require('channels')
 require('jquery')
+require('@nathanvda/cocoon')
 
 import 'utilities/answers.js'
 
 import 'bootstrap/dist/js/bootstrap'
 import 'bootstrap/dist/css/bootstrap'
-require("stylesheets/application.scss")
+require('stylesheets/application.scss')
 
 import $ from 'jquery';
 global.$ = $;
