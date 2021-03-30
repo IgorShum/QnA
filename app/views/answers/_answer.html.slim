@@ -2,6 +2,10 @@
   .card.answer.best
     .card-body
       =answer.body
+      links
+        ul
+          - answer.links.each do |l|
+            li= link_to l.name, l.url
       =render 'shared/attached_files', resource: answer
 -else
   .card.answer*{'id'=>answer.id}
@@ -9,6 +13,10 @@
       = button_to 'Best!', best_answer_path(answer), remote: true
     .card-body.body
       =answer.body
+      links
+        ul
+          - answer.links.each do |l|
+            li= link_to l.name, l.url
       =render 'shared/attached_files', resource: answer
 
 - if user_signed_in? && current_user&.author_of?(answer)
