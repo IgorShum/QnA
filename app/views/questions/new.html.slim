@@ -11,6 +11,15 @@
       = f.text_area :body, class: 'form-control'
 
     .form-group
+      = f.fields_for :links do |l|
+        p
+          = l.label :name, 'Link name', class: 'exampleFormControlTextarea1'
+          = l.text_field :name, class: 'form-control' , placeholder: 'title'
+        p
+          = l.label :url, class: 'exampleFormControlTextarea1'
+          = l.text_field :url, class: 'form-control' , placeholder: 'URI'
+
+    .form-group
       = f.label :files, class: 'exampleFormControlFile1'
       = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
 

@@ -3,6 +3,10 @@
   h2.display-4= @question.title
   br
   p.lead= @question.body
+  links
+    ul
+      - @question.links.each do |l|
+        li= link_to l.name, l.url
   = render 'shared/attached_files', resource: @question
 
   - if current_user&.author_of?(@question)
