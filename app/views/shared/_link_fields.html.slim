@@ -1,6 +1,6 @@
 .nested-fields
+  = link_to_remove_association "remove links", f
   .field
     = f.text_field :name, class: 'form-control', placeholder: 'Link name'
   .field
-  = f.text_field :url, class: 'form-control', placeholder: 'URL'
-  = link_to_remove_association "remove links", f
+    = f.text_field :url, class: 'form-control', placeholder: 'URL'

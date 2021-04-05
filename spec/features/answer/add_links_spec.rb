@@ -14,8 +14,11 @@ feature 'User can add links to answer', %q{
     visit question_path(question)
 
     fill_in 'Body', with: 'TestTextBody'
-    fill_in 'Link name', with: 'MyGist'
-    fill_in 'Url', with: gist_url
+    first_nested = first('.nested-fields')
+    within first_nested do
+      fill_in 'Link name', with: 'MyGist'
+      fill_in 'URL', with: gist_url
+    end
     click_on 'Create Answer'
     within '.answers' do
       expect(page).to have_link 'MyGist', href: gist_url

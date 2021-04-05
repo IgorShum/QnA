@@ -1,23 +1,13 @@
-- if answer.best
-  .card.answer.best
-    .card-body
-      =answer.body
-      links
-        ul
-          - answer.links.each do |l|
-            li= link_to l.name, l.url
-      =render 'shared/attached_files', resource: answer
--else
-  .card.answer*{'id'=>answer.id}
-    - if user_signed_in? && current_user&.author_of?(answer.question)
-      = button_to 'Best!', best_answer_path(answer), remote: true
-    .card-body.body
-      =answer.body
-      links
-        ul
-          - answer.links.each do |l|
-            li= link_to l.name, l.url
-      =render 'shared/attached_files', resource: answer
+div class =(answer.best ? 'card answer best' : 'card answer')
+  - if user_signed_in? && current_user&.author_of?(answer.question) && !answer.best
+    = button_to 'Best!', best_answer_path(answer), remote: true
+  .card-body
+    =answer.body
+    links
+      ul
+        - answer.links.each do |l|
+          li= link_to l.name, l.url
+    =render 'shared/attached_files', resource: answer
 
 - if user_signed_in? && current_user&.author_of?(answer)
   .links
@@ -29,6 +19,12 @@
       .form-group
       = f.label :body, class: 'exampleInput'
       = f.text_area :body, class: 'form-control'
+
+      #links
+        = f.fields_for :links do |link|
+          = render 'shared/link_fields', f: link
+          .links
+            = link_to_add_association '', f, :links, class: 'btn btn-success far fa-plus', partial: 'shared/link_fields'
 
       .form-group
         = f.label "Attachments:", class: 'exampleFormControlTextarea1'

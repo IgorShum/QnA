@@ -30,13 +30,12 @@ br
     = f.label :body, class: 'exampleInput'
     = f.text_area :body, class: 'form-control'
     br
-    #links
-      = f.fields_for :links do |link|
-        = render 'shared/link_fields', f: link
-        .links
-          = link_to_add_association 'Add link', f, :links, class: 'btn btn-primary', partial: 'shared/link_fields'
-    br
     = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
     br
+      #links
+        = f.fields_for :links do |link|
+          = render 'shared/link_fields', f: link
+          .links
+            = link_to_add_association '', f, :links, class: 'btn btn-success far fa-plus', partial: 'shared/link_fields'
     = f.submit 'Create Answer', class: 'btn btn-success'
 

@@ -13,8 +13,11 @@ feature 'User can add links to question', %q{
     visit new_question_path
     fill_in 'Title', with: 'LinksAddText'
     fill_in 'Body', with: 'BodyLinksText'
-    fill_in 'Link name', with: 'MyGist'
-    fill_in 'Url', with: gist_url
+    first_links_block = first('.nested-fields')
+    within first_links_block do
+      fill_in 'Link name', with: 'MyGist'
+      fill_in 'URL', with: gist_url
+    end
     click_on 'Ask'
 
     expect(page).to have_link 'MyGist', href: gist_url
