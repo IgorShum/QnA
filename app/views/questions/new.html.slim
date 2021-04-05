@@ -10,14 +10,11 @@
       = f.label :body, class: 'exampleFormControlTextarea1'
       = f.text_area :body, class: 'form-control'
 
-    .form-group
-      = f.fields_for :links do |l|
-        p
-          = l.label :name, 'Link name', class: 'exampleFormControlTextarea1'
-          = l.text_field :name, class: 'form-control' , placeholder: 'title'
-        p
-          = l.label :url, class: 'exampleFormControlTextarea1'
-          = l.text_field :url, class: 'form-control' , placeholder: 'URI'
+    #links
+      = f.fields_for :links do |link|
+        = render 'shared/link_fields', f: link
+        .links
+          = link_to_add_association 'Add link', f, :links, class: 'btn btn-primary', partial: 'shared/link_fields'
 
     .form-group
       = f.label :files, class: 'exampleFormControlFile1'

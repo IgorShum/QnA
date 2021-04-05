@@ -12,6 +12,11 @@
     .form-group
       = f.label "Attachments:", class: 'exampleFormControlTextarea1'
       .attachments
+        #links
+          = f.fields_for :links do |link|
+            = render 'shared/link_fields', f: link
+            .links
+              = link_to_add_association 'Add link', f, :links, class: 'btn btn-primary', partial: 'shared/link_fields'
         -@question.files.each do |file|
           .attachment
             =link_to "Delete #{file.filename.to_s}", attachment_path(file), class: 'far fa-times-circle text-danger',
